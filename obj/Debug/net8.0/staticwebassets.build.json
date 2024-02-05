@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "vAG1ZCE/zfiuBNfRJ0ZUVhDNwr29qaQDkg2oea7LvLk=",
+  "Source": "dotnet8-api",
+  "BasePath": "_content/dotnet8-api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
