@@ -44,7 +44,7 @@ namespace dotnet8_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto) 
+        public async Task<IActionResult> Create([FromBody] CreateStockDto stockDto) 
         {
             var stockModel = stockDto.ToStockFromCreateDto();
             await _stockRepository.CreateAsync(stockModel);
