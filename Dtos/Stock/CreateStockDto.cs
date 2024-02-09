@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace dotnet8_api.Dtos.Stock
 {
-    public class CreateStockRequestDto
+    public class CreateStockDto
     {
         public string Symbol { get; set; } = string.Empty;
         public string CompanyName { get; set; } = string.Empty;
