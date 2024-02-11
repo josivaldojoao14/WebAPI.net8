@@ -31,5 +31,14 @@ namespace dotnet8_api.Mappers
                 StockId = stockId
             };
         }
+
+        public static Comment ToCommentFromUpdate(this UpdateCommentDto comment)
+        {
+            return new Comment
+            {
+                Title = comment.Title,
+                Content = comment.Content
+            };
+        }
     }
 }
