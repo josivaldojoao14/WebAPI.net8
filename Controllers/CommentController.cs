@@ -33,10 +33,10 @@ namespace dotnet8_api.Controllers
             return Ok(comments);
         }   
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] int id) 
+        [HttpGet("{stockId}")]
+        public async Task<IActionResult> GetById([FromRoute] int stockId) 
         {
-            var comment = await _commentRepository.GetByIdAsync(id);
+            var comment = await _commentRepository.GetByIdAsync(stockId);
 
             if (comment == null) 
             {
@@ -57,7 +57,35 @@ namespace dotnet8_api.Controllers
             var commentModel = commentDto.ToCommentFromCreate(stockId);
             await _commentRepository.CreateAsync(commentModel);
 
-            return CreatedAtAction(nameof(GetById), new { id = commentModel}, commentModel.ToCommentDto());
+            return CreatedAtAction(nameof(GetById), new { stockId = commentModel.Id }, commentModel.ToCommentDto());
+        }
+
+        [HttpPut]
+        [Route("{stockId}")]
+        public async Task<IActionResult> Update([FromRoute] int stockId, [FromBody] UpdateCommentDto commentDto)
+        {
+            var comment = await _commentRepository.UpdateAsync(stockId, commentDto.ToCommentFromUpdate());
+
+            if (comment == null) 
+            {
+                return NotFound("Comment not found");
+            }
+
+            return Ok(comment.ToCommentDto());
+        }
+
+        [HttpDelete]
+        [Route("{stockId}")]
+        public async Task<IActionResult> Delete([FromRoute] int stockId) 
+        {
+            var comment = await _commentRepository.DeleteAsync(stockId);
+
+            if (comment == null) 
+            {
+                return NotFound("Comment not found");
+            }
+
+            return NoContent();
         }
     }
 }
