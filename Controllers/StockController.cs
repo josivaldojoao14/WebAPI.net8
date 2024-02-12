@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using dotnet8_api.Data;
 using dotnet8_api.Dtos.Stock;
+using dotnet8_api.Helpers;
 using dotnet8_api.Interfaces;
 using dotnet8_api.Mappers;
 using dotnet8_api.Models;
@@ -23,12 +24,12 @@ namespace dotnet8_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll() 
+        public async Task<IActionResult> GetAll([FromQuery] QueryObject query) 
         {
             if (!ModelState.IsValid) 
                 return BadRequest(ModelState);
                 
-            var stocks = await _stockRepository.GetAllAsync();
+            var stocks = await _stockRepository.GetAllAsync(query);
             var stockDto =  stocks.Select(s => s.ToStockDto());
 
             return Ok(stocks);
