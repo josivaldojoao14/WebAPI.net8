@@ -12,8 +12,8 @@ using dotnet8_api.Data;
 namespace dotnet8_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240212134458_SeedRole")]
-    partial class SeedRole
+    [Migration("20240213031126_CommentOneToOne")]
+    partial class CommentOneToOne
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,13 +54,13 @@ namespace dotnet8_api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e5cc4365-ea6f-4366-b459-46332313a17f",
+                            Id = "d46647b4-1d69-43ed-b7b0-78f7e879ffa4",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "2c0cc33c-8ecb-45b8-a9f3-57ab731f4bbe",
+                            Id = "d79d901f-9fef-4c88-ab27-76392bfdbd51",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -245,6 +245,10 @@ namespace dotnet8_api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -261,9 +265,26 @@ namespace dotnet8_api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppUserId");
+
                     b.HasIndex("StockId");
 
                     b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("dotnet8_api.Models.Portfolio", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUserId", "StockId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("Portfolios");
                 });
 
             modelBuilder.Entity("dotnet8_api.Models.Stock", b =>
@@ -353,16 +374,50 @@ namespace dotnet8_api.Migrations
 
             modelBuilder.Entity("dotnet8_api.Models.Comment", b =>
                 {
+                    b.HasOne("dotnet8_api.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dotnet8_api.Models.Stock", "Stock")
                         .WithMany("Comments")
                         .HasForeignKey("StockId");
 
+                    b.Navigation("AppUser");
+
                     b.Navigation("Stock");
+                });
+
+            modelBuilder.Entity("dotnet8_api.Models.Portfolio", b =>
+                {
+                    b.HasOne("dotnet8_api.Models.AppUser", "AppUser")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnet8_api.Models.Stock", "Stock")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Stock");
+                });
+
+            modelBuilder.Entity("dotnet8_api.Models.AppUser", b =>
+                {
+                    b.Navigation("Portfolios");
                 });
 
             modelBuilder.Entity("dotnet8_api.Models.Stock", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Portfolios");
                 });
 #pragma warning restore 612, 618
         }

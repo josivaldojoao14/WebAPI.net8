@@ -12,8 +12,8 @@ using dotnet8_api.Data;
 namespace dotnet8_api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240212131838_Identity")]
-    partial class Identity
+    [Migration("20240213020531_PortfolioManyToMany")]
+    partial class PortfolioManyToMany
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,20 @@ namespace dotnet8_api.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "342ec295-000f-46b9-8c15-83587a364e9f",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "788c312c-2f42-4243-9fe5-ab4f6673e54a",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -252,6 +266,21 @@ namespace dotnet8_api.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("dotnet8_api.Models.Portfolio", b =>
+                {
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AppUserId", "StockId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("Portfolios");
+                });
+
             modelBuilder.Entity("dotnet8_api.Models.Stock", b =>
                 {
                     b.Property<int>("Id")
@@ -346,9 +375,35 @@ namespace dotnet8_api.Migrations
                     b.Navigation("Stock");
                 });
 
+            modelBuilder.Entity("dotnet8_api.Models.Portfolio", b =>
+                {
+                    b.HasOne("dotnet8_api.Models.AppUser", "AppUser")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotnet8_api.Models.Stock", "Stock")
+                        .WithMany("Portfolios")
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Stock");
+                });
+
+            modelBuilder.Entity("dotnet8_api.Models.AppUser", b =>
+                {
+                    b.Navigation("Portfolios");
+                });
+
             modelBuilder.Entity("dotnet8_api.Models.Stock", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Portfolios");
                 });
 #pragma warning restore 612, 618
         }
