@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace dotnet8_api.Models
 {
+    [Table("Comments")]
     public class Comment
     {
         public int Id { get; set; }
@@ -14,5 +16,8 @@ namespace dotnet8_api.Models
 
         public int? StockId { get; set; }
         public Stock? Stock { get; set; }
+
+        public string AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }

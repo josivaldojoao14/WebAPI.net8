@@ -19,6 +19,7 @@ namespace dotnet8_api.Mappers
                 Content = comment.Content,
                 CreatedOn = comment.CreatedOn,
                 StockId = comment.StockId,
+                CreatedBy = comment.AppUser.UserName!
             };
         }
 
